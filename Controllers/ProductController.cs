@@ -59,8 +59,35 @@ namespace _WebAPIClient.Controllers
             return CreatedAtAction(nameof(GetItem), new { id = productDTO.Id }, productDTO);
             
         }
-        
-        
+        [HttpPut]
+        public ActionResult<ProductDTO> UpdateItem(int id, ProductDTO productDTO)
+        {
+            var product = _iProductInterface.GetProduct(id);
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            Product Product = product;
+            Product.Name = productDTO.Name;
+            Product.Category = productDTO.Category;
+
+            _iProductInterface.Update(Product.Id);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public ActionResult<ProductDTO> DeleteItem(int id)
+        {
+            
+            var item = _iProductInterface.GetProduct(id);
+            if(item == null)
+            {
+                return NotFound();
+            }
+           _iProductInterface.Delete(item.Id);
+            return NoContent();
+        }
         
     }
 }

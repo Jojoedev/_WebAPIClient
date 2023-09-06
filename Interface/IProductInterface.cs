@@ -9,5 +9,9 @@ namespace _WebAPIClient.Interface
         Product GetProduct(int id);
 
         void Create(Product product);
+
+        void Update(int id);
+
+        void Delete(int id);
     }
 }
