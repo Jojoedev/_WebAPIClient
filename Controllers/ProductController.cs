@@ -1,4 +1,5 @@
-﻿using _WebAPIClient.Interface;
+﻿using _WebAPIClient.Dtos;
+using _WebAPIClient.Interface;
 using _WebAPIClient.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,16 +18,21 @@ namespace _WebAPIClient.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Product> Index()
+        public IEnumerable<ProductDTO> Index()
         {
 
-           return _iProductInterface.GetProducts();
+            return _iProductInterface.GetProducts().Select(x => new ProductDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Category = x.Category,
+            });
             
         }
 
         [HttpGet]
         [Route("id")]
-        public ActionResult<Product> GetItem(int id)
+        public ActionResult<ProductDTO> GetItem(int id)
         {
             var product = _iProductInterface.GetProduct(id);
             if(product == null)
@@ -34,9 +40,27 @@ namespace _WebAPIClient.Controllers
                 return NotFound();
             }
 
-            return product;         
+            return new ProductDTO
+            {
+                Id =product.Id,
+                Name = product.Name,
+                Category = product.Category
+            };       
         }
+        [HttpPost]
+        public ActionResult<ProductDTO> CreateNew(ProductDTO productDTO)
+        {
+            Product product = new Product();
+            product.Id = productDTO.Id;
+            product.Name = productDTO.Name;
+            product.Category = productDTO.Category;
 
-
+            _iProductInterface.Create(product);
+            return CreatedAtAction(nameof(GetItem), new { id = productDTO.Id }, productDTO);
+            
+        }
+        
+        
+        
     }
 }

@@ -9,13 +9,12 @@ namespace _WebAPIClient.Service
     {
         public void Create(Product product)
         {
-            throw new NotImplementedException();
+            Database.products.Add(product);
         }
 
         public Product GetProduct(int id)
         {
             return Database.products.Where(x => x.Id == id).FirstOrDefault();
-            
         }
 
         public IEnumerable<Product> GetProducts()
